@@ -1,5 +1,6 @@
 package com.sogoamobile.weatherapp.model
 
+
 class WeatherResult {
     var coord: Coord? = null
     var weather: List<Weather>? = null

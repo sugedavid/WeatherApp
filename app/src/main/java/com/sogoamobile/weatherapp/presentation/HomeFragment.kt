@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.snackbar.Snackbar
 import com.sogoamobile.weatherapp.R
 import com.sogoamobile.weatherapp.common.Common
@@ -34,31 +36,7 @@ class HomeFragment : Fragment() {
     private var mTxtFarmLoc: TextView? = null
 
     private var loading: ProgressBar? = null
-
-
-//    fun getInstance(): HomeFragment {
-//        if (instance == null) instance = HomeFragment()
-//        return instance as HomeFragment
-//    }
-//
-//    fun HomeFragment() {
-//        // Required empty public constructor
-//        compositeDisposable = CompositeDisposable()
-//        val retrofit: Retrofit? = RetrofitClient.instance
-//        mService = retrofit?.create(IOpenWeatherMap::class.java)
-//    }
-
-//    fun getInstance(): HomeFragment? {
-//        if (instance == null) instance = com.sogoamobile.weatherapp.presentation.HomeFragment()
-//        return instance
-//    }
-//
-//    fun HomeFragment() {
-//        // Required empty public constructor
-//        compositeDisposable = CompositeDisposable()
-//        val retrofit: Retrofit? = RetrofitClient.instance
-//        mService = retrofit?.create(IOpenWeatherMap::class.java)
-//    }
+    private var cdvFav: CardView? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,7 +53,6 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
 
         // Inflate the layout for this fragment
         val itemView = inflater.inflate(R.layout.fragment_home, container, false)
@@ -83,9 +60,22 @@ class HomeFragment : Fragment() {
         imgWeatherIcon = itemView.findViewById(R.id.imgWeatherIcon)
         mTxtTemp = itemView.findViewById(R.id.txtTemp)
         mTxtWeatherDesc = itemView.findViewById(R.id.txtWeatherDesc)
-        mTxtFarmLoc = itemView.findViewById(R.id.txtFarmLoc)
+        mTxtFarmLoc = itemView.findViewById(R.id.txtCurrentLocation)
 
         loading = itemView.findViewById(R.id.loadingF)
+        cdvFav = itemView.findViewById(R.id.cdvFav)
+
+        cdvFav?.setOnClickListener(View.OnClickListener {
+            val bundle = Bundle()
+            bundle.putDouble("lat", 39.8865)
+            bundle.putDouble("lng", -83.4483)
+            val weatherInfoFragment = WeatherInfoFragment()
+            weatherInfoFragment.arguments = bundle
+            val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
+            transaction.addToBackStack(null)
+            transaction.replace(R.id.mainFragment, weatherInfoFragment)
+            transaction.commit()
+        })
 
 
         getWeatherInformation()
@@ -105,7 +95,7 @@ class HomeFragment : Fragment() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ weatherResult -> //Load Image
                     Picasso.get().load(
-                        StringBuilder("http://openweathermap.org/img/w/")
+                        StringBuilder(Common().imageUrl)
                             .append(weatherResult?.weather?.get(0)?.icon)
                             .append(".png").toString()
                     ).into(imgWeatherIcon)

@@ -1,7 +1,7 @@
 package com.sogoamobile.weatherapp.model
 
 class MyList {
-    var dt = 0
+    var dt:Long = 0
     var main: Main? = null
     var weather: List<Weather>? = null
     var clouds: Clouds? = null

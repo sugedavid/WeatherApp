@@ -10,6 +10,8 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.sogoamobile.weatherapp.R
 import com.sogoamobile.weatherapp.common.Common
@@ -66,15 +68,19 @@ class HomeFragment : Fragment() {
         cdvFav = itemView.findViewById(R.id.cdvFav)
 
         cdvFav?.setOnClickListener(View.OnClickListener {
-            val bundle = Bundle()
-            bundle.putDouble("lat", 39.8865)
-            bundle.putDouble("lng", -83.4483)
-            val weatherInfoFragment = WeatherInfoFragment()
-            weatherInfoFragment.arguments = bundle
-            val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
-            transaction.addToBackStack(null)
-            transaction.replace(R.id.mainFragment, weatherInfoFragment)
-            transaction.commit()
+//            val bundle = Bundle()
+//            bundle.putDouble("lat", 39.8865)
+//            bundle.putDouble("lng", -83.4483)
+//            val weatherInfoFragment = WeatherInfoFragment()
+//            weatherInfoFragment.arguments = bundle
+//            val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
+//            transaction.addToBackStack(null)
+//            transaction.replace(R.id.mainFragment, weatherInfoFragment)
+//            transaction.commit()
+//
+
+            val action = HomeFragmentDirections.actionHomeFragmentToWeatherFragment(lat = (39.8865).toString(), long = (-83.4483).toString())
+            findNavController().navigate(action)
         })
 
 

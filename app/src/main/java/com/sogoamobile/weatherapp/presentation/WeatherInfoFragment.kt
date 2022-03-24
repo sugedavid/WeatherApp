@@ -3,15 +3,14 @@ package com.sogoamobile.weatherapp.presentation
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -21,8 +20,10 @@ import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.sogoamobile.weatherapp.R
-import com.sogoamobile.weatherapp.adapter.WeatherForecastAdapterB
+import com.sogoamobile.weatherapp.R.id.txt_sunset
+import com.sogoamobile.weatherapp.adapter.WeatherForecastAdapter
 import com.sogoamobile.weatherapp.common.Common
+import com.sogoamobile.weatherapp.databinding.FragmentWeatherInfoBinding
 import com.sogoamobile.weatherapp.model.WeatherForecastResult
 import com.sogoamobile.weatherapp.retrofit.IOpenWeatherMap
 import com.sogoamobile.weatherapp.retrofit.RetrofitClient
@@ -38,10 +39,15 @@ import kotlin.toString
 
 class WeatherInfoFragment : Fragment() {
 
+    companion object {
+        const val long = "long"
+        const val lat = "lat"
+    }
+
     private val instance: WeatherInfoFragment? = null
     private var txt_city_name: TextView? = null
     private var txt_humidity: TextView? = null
-    private var txt_sunrise: TextView? = null
+    private var txt_visibility: TextView? = null
     private var txt_sunset: TextView? = null
     private var txt_pressure: TextView? = null
     private var txt_description: TextView? = null
@@ -58,12 +64,20 @@ class WeatherInfoFragment : Fragment() {
 
     private var recycler_forecast: RecyclerView? = null
 
-    private var dbLat = 0.0
-    private var dbLng = 0.0
+    private var dbLat = "0.0"
+    private var dbLng = "0.0"
+
+    private var _binding: FragmentWeatherInfoBinding? = null
+    private val binding get() = _binding!!
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        arguments?.let {
+            dbLat = it.getString(lat).toString()
+            dbLng = it.getString(long).toString()
+        }
 
         compositeDisposable = CompositeDisposable()
         val retrofit: Retrofit? = RetrofitClient.instance
@@ -74,31 +88,25 @@ class WeatherInfoFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
-        val itemView = inflater.inflate(R.layout.fragment_home, container, false)
-
-        recycler_forecast?.setHasFixedSize(true)
-        recycler_forecast?.layoutManager = LinearLayoutManager(
-            context,
-            LinearLayoutManager.VERTICAL,
-            false
-        )
-        recycler_forecast = itemView.findViewById(R.id.recycler_forecast)
+        _binding = FragmentWeatherInfoBinding.inflate(inflater, container, false)
+        val view = binding.root
 
 
-        img_weather = itemView.findViewById(R.id.img_weather)
-        txt_city_name = itemView.findViewById(R.id.txt_city_name)
-        txt_date_time = itemView.findViewById(R.id.txt_date_time)
-        txt_description = itemView.findViewById(R.id.txt_description)
-        txt_humidity = itemView.findViewById(R.id.txt_humidity)
-        txt_pressure = itemView.findViewById(R.id.txt_pressure)
-        txt_sunrise = itemView.findViewById(R.id.txt_sunrise)
-        txt_sunset = itemView.findViewById(R.id.txt_sunset)
-        txt_wind = itemView.findViewById(R.id.txt_wind)
-        txt_temperature = itemView.findViewById(R.id.txt_temperature)
-        weather_panel = itemView.findViewById(R.id.weather_panel)
-        loading = itemView.findViewById(R.id.loading)
+
+        img_weather = binding.imgWeather
+        txt_city_name = binding.txtCityName
+        txt_date_time = binding.txtDateTime
+        txt_description = binding.txtDescription
+        txt_humidity = binding.txtHumidity
+        txt_pressure = binding.txtPressure
+        txt_visibility = binding.txtVisibility
+        txt_sunset = binding.txtSunset
+        txt_wind = binding.txtWind
+        txt_temperature = binding.txtTemperature
+        weather_panel = binding.weatherPanel
+        loading = binding.loading
 
 
         Dexter.withActivity(activity)
@@ -120,7 +128,9 @@ class WeatherInfoFragment : Fragment() {
                         ) {
                             return
                         }
+                        //current weather
                         getWeatherInformation()
+                        // weather forecast
                         getForecastWeatherInformation()
                     }
                 }
@@ -137,22 +147,15 @@ class WeatherInfoFragment : Fragment() {
                 }
             }).check()
 
-        return itemView
+        return view
     }
 
-    private fun displayForecastWeather(
-        weatherForecastResult: WeatherForecastResult
-
-    ) {
-        val adapter = WeatherForecastAdapterB(requireContext(), weatherForecastResult)
-        recycler_forecast?.adapter = adapter
-    }
 
     private fun getWeatherInformation() {
 
         compositeDisposable?.add(
             mService!!.getWeatherByLatLng(
-                "39.8865", "-83.4483",
+                dbLat, dbLng,
                 Common().apiKey,
                 "metric"
             )
@@ -164,30 +167,51 @@ class WeatherInfoFragment : Fragment() {
                             .append(weatherResult?.weather?.get(0)?.icon)
                             .append(".png").toString()
                     ).into(img_weather)
+
+                    //city
                     txt_city_name?.text = weatherResult?.name
+
+                    //temperature
                     txt_temperature?.text = java.lang.StringBuilder(
-                        String.valueOf(weatherResult?.main?.temp)
+                        String.valueOf(weatherResult?.main?.temp?.toInt())
                     )
                         .append("°C").toString()
+
+                    //date
                     txt_date_time!!.text =
-                        "Updated " + Common().convertUnixToDate(weatherResult?.dt as Long)
+                        "Updated " + Common().convertUnixToDate(weatherResult?.dt!!.toLong())
+
+                    //pressure
                     txt_pressure?.text = java.lang.StringBuilder(
                         String.valueOf(
                             weatherResult.main?.pressure
                         )
                     )
-                        .append(" hpa").toString()
+                        .append(" hPa").toString()
+
+                    //humidity
                     txt_humidity?.text = java.lang.StringBuilder(
                         String.valueOf(
                             weatherResult.main?.humidity
                         )
-                    )
-                        .append(" %").toString()
-                    txt_sunrise?.text = Common().convertUnixToHour(
-                        weatherResult.sys?.sunrise as Long
-                    )
+                    ).append(" %").toString()
+
+                    //wind
+                    txt_wind?.text = java.lang.StringBuilder(
+                        String.valueOf(
+                            (weatherResult.wind?.speed?.times(3.6))?.toInt()
+                        )
+                    ).append(" km/h").toString()
+
+                    //visibility
+                    txt_visibility?.text = java.lang.StringBuilder(
+                        String.valueOf(
+                            weatherResult.visibility / 1000
+                        )
+                    ).append(" km/h").toString()
+
                     txt_sunset?.text = Common().convertUnixToHour(
-                        weatherResult.sys?.sunset as Long
+                        weatherResult.sys?.sunset!!.toLong()
                     )
                     txt_geo_cord?.text = java.lang.StringBuilder("[")
                         .append(weatherResult.coord.toString())
@@ -205,34 +229,41 @@ class WeatherInfoFragment : Fragment() {
     }
 
     private fun getForecastWeatherInformation() {
-        if (arguments != null) {
-            dbLat = requireArguments().getDouble("lat")
-            dbLng = requireArguments().getDouble("lng")
 
-            compositeDisposable!!.add(
-                mService!!.getForecastWeatherByLatLng(
-                    dbLat.toString(), dbLng.toString(),
-                    Common().apiKey,
-                    "metric"
-                )
-                !!.subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ weatherForecastResult ->
-                        displayForecastWeather(
-                            weatherForecastResult!!,
 
-                            )
-                    }
-                    ) { throwable ->
-                        Snackbar.make(
-                            requireActivity().findViewById(android.R.id.content),
-                            throwable.message!!, Snackbar.LENGTH_LONG
-                        ).show()
-                    }
+
+        compositeDisposable!!.add(
+            mService!!.getForecastWeatherByLatLng(
+                dbLat, dbLng,
+                Common().apiKey,
+                "metric"
             )
+            !!.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ weatherForecastResult ->
+                    displayForecastWeather(
+                        weatherForecastResult!!,
+                    )
+                }
+                ) { throwable ->
+                    Snackbar.make(
+                        requireActivity().findViewById(android.R.id.content),
+                        throwable.message!!, Snackbar.LENGTH_LONG
+                    ).show()
+                }
+        )
 
-        }
     }
 
+    private fun displayForecastWeather(
+        weatherForecastResult: WeatherForecastResult
+
+    ) {
+//        Log.d("WeatherInfoFragment", weatherForecastResult.list?.get(0)?.weather?.get(0)?.description.toString())
+        val adapter = WeatherForecastAdapter(requireContext(), weatherForecastResult)
+        val recyclerView = binding.recyclerForecast
+        recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+        recyclerView.adapter = adapter
+    }
 
 }

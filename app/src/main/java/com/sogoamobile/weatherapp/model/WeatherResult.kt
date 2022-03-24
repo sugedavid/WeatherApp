@@ -6,6 +6,7 @@ class WeatherResult {
     var weather: List<Weather>? = null
     var base: String? = null
     var main: Main? = null
+    var visibility = 0
     var wind: Wind? = null
     var rain: Rain? = null
     var clouds: Clouds? = null

@@ -71,7 +71,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:gravity="center"
-                    android:text="Thur, 30 Jul, 2021 \n\n 3:18 AM"
+                    tools:text="Thur, 30 Jul, 2021 \n\n 3:18 AM"
                     android:textColor="@color/white"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -90,10 +90,9 @@
 
                 <ImageView
                     android:id="@+id/img_weather"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="84dp"
+                    android:layout_height="84dp"
                     android:layout_gravity="center"
-                    android:scaleType="centerInside"
                     android:src="@drawable/ic_night" />
 
 
@@ -116,7 +115,7 @@
                                 android:background="@android:color/transparent"
                                 android:drawablePadding="15dp"
                                 android:textColor="@color/white"
-                                tools:text="WIND" />
+                                android:text="WIND" />
 
                             <TextView
                                 android:id="@+id/txt_wind"
@@ -162,11 +161,11 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="@android:color/transparent"
-                                android:text="SUNRISE"
+                                android:text="VISIBILITY"
                                 android:textColor="@color/white" />
 
                             <TextView
-                                android:id="@+id/txt_sunrise"
+                                android:id="@+id/txt_visibility"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="@android:color/transparent"

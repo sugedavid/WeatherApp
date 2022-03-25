@@ -4,14 +4,20 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/main/res/drawable/background_gradient.xml" value="0.2085" />
+        <entry key="app/src/main/res/drawable/custom_divider.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.2085" />
         <entry key="app/src/main/res/drawable/ic_night.xml" value="0.2085" />
         <entry key="app/src/main/res/drawable/ic_rainy_night.xml" value="0.2085" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/dialog_notes.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/fragment_weather_info.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/fragment_notes.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_weather_info.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/item_notes.xml" value="0.1" />
         <entry key="app/src/main/res/layout/item_weather_forecast.xml" value="0.1" />
         <entry key="app/src/main/res/layout/item_weather_forecastb.xml" value="0.165" />
+        <entry key="app/src/main/res/layout/notes_appbar.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/weather_info_appbar.xml" value="0.1" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1" />
       </map>
     </option>

@@ -1,0 +1,51 @@
+package com.sogoamobile.weatherapp.adapter
+
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.*
+import androidx.recyclerview.widget.RecyclerView
+import com.sogoamobile.weatherapp.R
+import com.sogoamobile.weatherapp.common.Common
+import com.sogoamobile.weatherapp.data.Notes
+import com.sogoamobile.weatherapp.model.WeatherForecastResult
+import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.dialog_notes.view.*
+import kotlinx.android.synthetic.main.item_notes.view.*
+
+
+class NotesAdapter(
+    var context: Context,
+) :
+    RecyclerView.Adapter<NotesAdapter.MyViewHolder>() {
+
+    private var notesList = emptyList<Notes>()
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+        val itemView: View =
+            LayoutInflater.from(context).inflate(R.layout.item_notes, parent, false)
+        return MyViewHolder(itemView)
+    }
+
+    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+
+        val currentItem = notesList[position]
+        holder.itemView.txt_notes.text = currentItem.notes
+        holder.itemView.txt_date_time.text = currentItem.date
+    }
+
+    fun setData(notes: List<Notes>) {
+        this.notesList = notes
+        notifyDataSetChanged()
+    }
+
+    override fun getItemCount(): Int {
+        return notesList.size
+    }
+
+    class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+    }
+
+}

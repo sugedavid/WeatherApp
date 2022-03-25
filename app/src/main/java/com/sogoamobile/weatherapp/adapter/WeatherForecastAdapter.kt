@@ -18,11 +18,6 @@ class WeatherForecastAdapter(
 ) :
     RecyclerView.Adapter<WeatherForecastAdapter.MyViewHolder>() {
 
-    private var mTxtDesc: TextView? = null
-    private var mTxtTemp: TextView? = null
-    private var mTxtTime: TextView? = null
-    private var imgCloud: ImageView? = null
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val itemView: View =
             LayoutInflater.from(context).inflate(R.layout.item_weather_forecast, parent, false)
@@ -32,44 +27,42 @@ class WeatherForecastAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val desc: String? = weatherForecastResult.list?.get(position)?.weather?.get(0)?.description
 
-
         //Load Image
         Picasso.get().load(
             StringBuilder(Common().imageUrl)
                 .append(weatherForecastResult.list?.get(position)?.weather?.get(0)?.icon)
                 .append(".png").toString()
-        ).into(holder.img_weather)
+        ).into(holder.imgWeather)
         val time: String? = weatherForecastResult.list?.get(position)?.dt?.let {
             Common().convertUnixToDate(
                 it
             )
         }
-        holder.txt_date_time.text = time
-        holder.txt_description.text = desc
-        holder.txt_temperature.setText(
-            StringBuilder(
-                java.lang.String.valueOf(
-                    weatherForecastResult.list?.get(
-                        position
-                    )?.main?.temp?.toInt()
-                )
-            ).append("°C")
-        )
 
-
+        //time
+        holder.txtDateTime.text = time
+        //description
+        holder.txtDescription.text = desc
+        //temperature
+        holder.txtTemperature.text = StringBuilder(
+            java.lang.String.valueOf(
+                weatherForecastResult.list?.get(
+                    position
+                )?.main?.temp?.toInt()
+            )
+        ).append("°C")
     }
 
     override fun getItemCount(): Int {
-        return weatherForecastResult.list!!.size
+//        weatherForecastResult.list!!.size
+        return 8
     }
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var txt_date_time: TextView = itemView.findViewById(R.id.txt_date)
-        var txt_description: TextView  = itemView.findViewById(R.id.txt_description)
-        var txt_temperature: TextView = itemView.findViewById(R.id.txt_temperature)
-        var img_weather: ImageView = itemView.findViewById(R.id.img_weather)
-        var lnForecast: LinearLayout = itemView.findViewById(R.id.lnForecast)
-
+        var txtDateTime: TextView = itemView.findViewById(R.id.txt_date)
+        var txtDescription: TextView = itemView.findViewById(R.id.txt_description)
+        var txtTemperature: TextView = itemView.findViewById(R.id.txt_temperature)
+        var imgWeather: ImageView = itemView.findViewById(R.id.img_weather)
     }
 
 }

@@ -1,17 +1,16 @@
-package com.sogoamobile.weatherapp.presentation
+package com.sogoamobile.weatherapp.presentation.fragments
 
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.karumi.dexter.Dexter
@@ -19,8 +18,6 @@ import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
-import com.sogoamobile.weatherapp.R
-import com.sogoamobile.weatherapp.R.id.txt_sunset
 import com.sogoamobile.weatherapp.adapter.WeatherForecastAdapter
 import com.sogoamobile.weatherapp.common.Common
 import com.sogoamobile.weatherapp.databinding.FragmentWeatherInfoBinding
@@ -33,7 +30,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import retrofit2.Retrofit
 import java.lang.String
-import kotlin.Long
 import kotlin.toString
 
 
@@ -108,7 +104,21 @@ class WeatherInfoFragment : Fragment() {
         weather_panel = binding.weatherPanel
         loading = binding.loading
 
+        // home tab
+        val homeTab = binding.weatherInfoAppbar.cdvHome
+        homeTab.setOnClickListener {
+            val action = WeatherInfoFragmentDirections.actionWeatherFragmentToHomeFragment()
+            findNavController().navigate(action)
+        }
 
+        // notes tab
+        val notesTab = binding.weatherInfoAppbar.cdvNotes
+        notesTab.setOnClickListener {
+            val action = WeatherInfoFragmentDirections.actionWeatherFragmentToNotesFragment()
+            findNavController().navigate(action)
+        }
+
+        // check location permissions
         Dexter.withActivity(activity)
             .withPermissions(
                 Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -229,7 +239,6 @@ class WeatherInfoFragment : Fragment() {
     }
 
     private fun getForecastWeatherInformation() {
-
 
 
         compositeDisposable!!.add(

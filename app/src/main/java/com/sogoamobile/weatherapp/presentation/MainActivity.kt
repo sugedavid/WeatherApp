@@ -1,7 +1,8 @@
-package com.sogoamobile.weatherapp
+package com.sogoamobile.weatherapp.presentation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.sogoamobile.weatherapp.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

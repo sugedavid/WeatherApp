@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/srlT"
@@ -16,9 +16,9 @@
 
         <include
             android:id="@+id/weather_info_appbar"
+            layout="@layout/weather_info_appbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            layout="@layout/weather_info_appbar"/>
+            android:layout_height="match_parent" />
 
 
         <ProgressBar
@@ -67,7 +67,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:gravity="center"
-                    android:text="Current weather"
+                    android:text="@string/current_weather"
                     android:textColor="@color/white"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -78,10 +78,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:gravity="center"
-                    tools:text="Thur, 30 Jul, 2021 \n\n 3:18 AM"
                     android:textColor="@color/white"
                     android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:text="Thur, 30 Jul, 2021 \n\n 3:18 AM" />
 
 
                 <TextView
@@ -121,8 +121,8 @@
                                 android:layout_height="wrap_content"
                                 android:background="@android:color/transparent"
                                 android:drawablePadding="15dp"
-                                android:textColor="@color/white"
-                                android:text="WIND" />
+                                android:text="WIND"
+                                android:textColor="@color/white" />
 
                             <TextView
                                 android:id="@+id/txt_wind"
@@ -234,24 +234,16 @@
 
                 </TableLayout>
 
-                <androidx.core.widget.NestedScrollView
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_forecast"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="10dp">
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recycler_forecast"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal">
-
-                    </androidx.recyclerview.widget.RecyclerView>
-
-                </androidx.core.widget.NestedScrollView>
-
+                </androidx.recyclerview.widget.RecyclerView>
 
             </LinearLayout>
-
 
         </androidx.cardview.widget.CardView>
 
@@ -264,7 +256,19 @@
             android:textColor="@color/white"
             android:textStyle="bold" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="40dp"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:text="@string/copyright" />
+
 
     </LinearLayout>
 
-</ScrollView>
+</androidx.core.widget.NestedScrollView>

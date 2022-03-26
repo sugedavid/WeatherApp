@@ -27,14 +27,14 @@ class WeatherForecastAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val desc: String? = weatherForecastResult.list?.get(position)?.weather?.get(0)?.description
 
-        //Load Image
+        //Load weather icon
         Picasso.get().load(
             StringBuilder(Common().imageUrl)
                 .append(weatherForecastResult.list?.get(position)?.weather?.get(0)?.icon)
                 .append(".png").toString()
         ).into(holder.imgWeather)
         val time: String? = weatherForecastResult.list?.get(position)?.dt?.let {
-            Common().convertUnixToDate(
+            Common().convertUnixToHour(
                 it
             )
         }

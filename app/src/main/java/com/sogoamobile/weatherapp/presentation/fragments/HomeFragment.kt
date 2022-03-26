@@ -1,11 +1,8 @@
 package com.sogoamobile.weatherapp.presentation.fragments
 
 import android.Manifest
-import android.content.Context.LOCATION_SERVICE
 import android.content.pm.PackageManager
 import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +14,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
@@ -26,10 +24,9 @@ import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.sogoamobile.weatherapp.R
+import com.sogoamobile.weatherapp.adapter.CitiesForecastAdapter
 import com.sogoamobile.weatherapp.common.Common
 import com.sogoamobile.weatherapp.databinding.FragmentHomeBinding
-import com.sogoamobile.weatherapp.databinding.FragmentNotesBinding
-import com.sogoamobile.weatherapp.databinding.FragmentWeatherInfoBinding
 import com.sogoamobile.weatherapp.retrofit.IOpenWeatherMap
 import com.sogoamobile.weatherapp.retrofit.RetrofitClient
 import com.squareup.picasso.Picasso
@@ -47,7 +44,8 @@ class HomeFragment : Fragment() {
     private var imgWeatherIcon: ImageView? = null
     private var mTxtTemp: TextView? = null
     private var mTxtWeatherDesc: TextView? = null
-    private var mTxtFarmLoc: TextView? = null
+    private var mTxtCity: TextView? = null
+    private var mTxtDateTime: TextView? = null
     private var loading: ProgressBar? = null
     private var cdvFav: CardView? = null
 
@@ -60,6 +58,7 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         compositeDisposable = CompositeDisposable()
@@ -71,11 +70,18 @@ class HomeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         // Inflate the layout for this fragment
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val view = binding.root
+
+        // recycler view
+        val adapter =
+            CitiesForecastAdapter(requireContext(), compositeDisposable!!, mService!!, Common().getCitiesList())
+        val recyclerView = binding.recyclerCitiesForecast
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView.adapter = adapter
 
         // check location permissions
         Dexter.withActivity(activity)
@@ -124,12 +130,22 @@ class HomeFragment : Fragment() {
         imgWeatherIcon = binding.imgWeatherIcon
         mTxtTemp = binding.txtTemp
         mTxtWeatherDesc = binding.txtWeatherDesc
-        mTxtFarmLoc = binding.txtCurrentLocation
+        mTxtCity = binding.txtCurrentLocation
+        mTxtDateTime = binding.txtDateTime
 
         loading = binding.loadingF
         cdvFav = binding.cdvFav
 
         cdvFav?.setOnClickListener {
+            val action = HomeFragmentDirections.actionHomeFragmentToWeatherFragment(
+                lat = dbLat,
+                long = dbLng
+            )
+            findNavController().navigate(action)
+        }
+
+        val weatherInfoTab = binding.layoutHomeAppbar.imgWeatherInfoTab
+        weatherInfoTab.setOnClickListener {
             val action = HomeFragmentDirections.actionHomeFragmentToWeatherFragment(
                 lat = dbLat,
                 long = dbLng
@@ -158,10 +174,23 @@ class HomeFragment : Fragment() {
                             .append(weatherResult?.weather?.get(0)?.icon)
                             .append(".png").toString()
                     ).into(imgWeatherIcon)
-                    mTxtFarmLoc?.text = weatherResult?.name
+                    mTxtCity?.text = weatherResult?.name
                     mTxtWeatherDesc?.text = weatherResult?.weather?.get(0)?.description
-                    mTxtTemp?.text = StringBuilder(String.valueOf(weatherResult?.main?.temp?.toInt()))
-                        .append("°C").toString()
+                    mTxtTemp?.text =
+                        StringBuilder(String.valueOf(weatherResult?.main?.temp?.toInt()))
+                            .append("°C").toString()
+
+                    //date
+                    mTxtDateTime!!.text =
+                        Common().convertUnixToDate(weatherResult?.dt!!.toLong()) + "\n\n" + Common().convertUnixToHour(weatherResult?.dt!!.toLong())
+
+                    // change background
+                    binding.imgBg1.setBackgroundResource(
+                        Common().changeBackgroundImage(
+                            weatherResult?.weather?.get(0)?.description!!
+                        )
+                    )
+
                     loading?.visibility = View.GONE
                 }, { throwable ->
                     loading?.visibility = View.GONE

@@ -1,6 +1,7 @@
 package com.sogoamobile.weatherapp.adapter
 
 import android.content.Context
+import android.provider.Contacts
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.sogoamobile.weatherapp.R
 import com.sogoamobile.weatherapp.common.Common
 import com.sogoamobile.weatherapp.data.Notes
+import com.sogoamobile.weatherapp.model.CityFavourite
 import com.sogoamobile.weatherapp.model.WeatherForecastResult
 import com.sogoamobile.weatherapp.presentation.fragments.HomeFragmentDirections
 import com.sogoamobile.weatherapp.retrofit.IOpenWeatherMap
@@ -23,15 +25,22 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.dialog_notes.view.*
 import kotlinx.android.synthetic.main.item_cities_forecast.view.*
 import kotlinx.android.synthetic.main.item_notes.view.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 
-class CitiesForecastAdapter(
+open class CitiesForecastAdapter(
     var context: Context,
     private var compositeDisposable: CompositeDisposable,
     private var mService: IOpenWeatherMap,
-    private var cities: List<String>
+    private var cities: ArrayList<CityFavourite>
 ) :
-    RecyclerView.Adapter<CitiesForecastAdapter.MyViewHolder>() {
+    RecyclerView.Adapter<CitiesForecastAdapter.MyViewHolder>(), Filterable {
+
+    var citiesListFiltered = ArrayList<CityFavourite>()
+    init {
+        citiesListFiltered = cities
+    }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -42,11 +51,11 @@ class CitiesForecastAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
 
-        val city = cities[position]
+        val city = citiesListFiltered[position]
 
         compositeDisposable.add(
             mService.getForecastWeatherCity(
-                city,
+                city.name,
                 Common().apiKey,
                 "metric"
             )
@@ -62,7 +71,7 @@ class CitiesForecastAdapter(
                     ).into(holder.itemView.imgWeatherIcon)
 
                     //city name
-                    holder.itemView.txtCityName.text = city
+                    holder.itemView.txtCityName.text = city.name
 
                     //temperature
                     holder.itemView.txtTemperature.text = StringBuilder(
@@ -92,7 +101,7 @@ class CitiesForecastAdapter(
                     holder.itemView.setOnClickListener {
 //
                         val action = HomeFragmentDirections.actionHomeFragmentToWeatherFragment(
-                            city =  city,
+                            city =  city.name.toString(),
                         )
                         holder.itemView.findNavController().navigate(action)
                     }
@@ -109,11 +118,40 @@ class CitiesForecastAdapter(
     }
 
     override fun getItemCount(): Int {
-        return cities.size
+        return citiesListFiltered.size
     }
 
-    class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+    }
+
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val charSearch = constraint.toString()
+                if (charSearch.isEmpty()) {
+                    citiesListFiltered = cities
+                } else {
+                    val resultList = ArrayList<CityFavourite>()
+                    for (row in cities) {
+                        if (row.name?.lowercase(Locale.ROOT)!!.contains(charSearch.lowercase(Locale.ROOT))) {
+                            resultList.add(row)
+                        }
+                    }
+                    citiesListFiltered = resultList
+                }
+                val filterResults = FilterResults()
+                filterResults.values = citiesListFiltered
+                return filterResults
+            }
+
+            @Suppress("UNCHECKED_CAST")
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                citiesListFiltered = results?.values as ArrayList<CityFavourite>
+                notifyDataSetChanged()
+            }
+
+        }
     }
 
 }

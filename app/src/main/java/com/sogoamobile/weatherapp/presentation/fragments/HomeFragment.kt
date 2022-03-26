@@ -2,19 +2,20 @@ package com.sogoamobile.weatherapp.presentation.fragments
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.location.Location
+import android.opengl.Visibility
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
@@ -23,7 +24,6 @@ import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
-import com.sogoamobile.weatherapp.R
 import com.sogoamobile.weatherapp.adapter.CitiesForecastAdapter
 import com.sogoamobile.weatherapp.common.Common
 import com.sogoamobile.weatherapp.databinding.FragmentHomeBinding
@@ -35,10 +35,13 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import retrofit2.Retrofit
 import java.lang.String
+import kotlin.Boolean
+import kotlin.TODO
+import kotlin.plus
 import kotlin.toString
 
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment() , SearchView.OnQueryTextListener{
 
 
     private var imgWeatherIcon: ImageView? = null
@@ -48,6 +51,8 @@ class HomeFragment : Fragment() {
     private var mTxtDateTime: TextView? = null
     private var loading: ProgressBar? = null
     private var cdvFav: CardView? = null
+    var searchView: SearchView? = null
+    private lateinit var adapter: CitiesForecastAdapter
 
     private var dbLat = "0.0"
     private var dbLng = "0.0"
@@ -76,8 +81,12 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val view = binding.root
 
+        // search
+        searchView = binding.layoutHomeAppbar.searchView
+        searchView?.setOnQueryTextListener(this)
+
         // recycler view
-        val adapter =
+         adapter =
             CitiesForecastAdapter(requireContext(), compositeDisposable!!, mService!!, Common().getCitiesList())
         val recyclerView = binding.recyclerCitiesForecast
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -144,6 +153,7 @@ class HomeFragment : Fragment() {
             findNavController().navigate(action)
         }
 
+
         val weatherInfoTab = binding.layoutHomeAppbar.imgWeatherInfoTab
         weatherInfoTab.setOnClickListener {
             val action = HomeFragmentDirections.actionHomeFragmentToWeatherFragment(
@@ -152,6 +162,17 @@ class HomeFragment : Fragment() {
             )
             findNavController().navigate(action)
         }
+
+        //search tab
+
+        val searchTab = binding.layoutHomeAppbar.imgSearchTab
+        val searchView = binding.layoutHomeAppbar.searchView
+        val cdvSearchView = binding.layoutHomeAppbar.cdvSearchView
+        searchTab.setOnClickListener {
+            searchTab.visibility = View.GONE
+            cdvSearchView.visibility = View.VISIBLE
+        }
+
         // current weather
         getCurrentWeatherInformation()
 
@@ -200,6 +221,16 @@ class HomeFragment : Fragment() {
                     ).show()
                 })
         )
+    }
+
+    override fun onQueryTextSubmit(query: kotlin.String?): Boolean {
+        adapter?.filter?.filter(query)
+        return false
+    }
+
+    override fun onQueryTextChange(newText: kotlin.String?): Boolean {
+        adapter?.filter?.filter(newText)
+        return false
     }
 
 }

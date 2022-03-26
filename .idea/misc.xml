@@ -14,7 +14,7 @@
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_notes.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_weather_info.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/home_appbar.xml" value="0.3098958333333333" />
+        <entry key="app/src/main/res/layout/home_appbar.xml" value="0.1" />
         <entry key="app/src/main/res/layout/item_cities_forecast.xml" value="0.1" />
         <entry key="app/src/main/res/layout/item_notes.xml" value="0.1" />
         <entry key="app/src/main/res/layout/item_weather_forecast.xml" value="0.1" />

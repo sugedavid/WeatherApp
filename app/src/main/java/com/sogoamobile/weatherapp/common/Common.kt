@@ -1,6 +1,7 @@
 package com.sogoamobile.weatherapp.common
 
 import android.location.Location
+import com.sogoamobile.weatherapp.R
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -12,13 +13,25 @@ class Common {
 
     fun convertUnixToDate(dt: Long): String? {
         val date = Date(dt * 1000L)
-        val simpleDateFormat = SimpleDateFormat("HH:mm dd EEE")
+        val simpleDateFormat = SimpleDateFormat("EEE, d MMM, yyy")
         return simpleDateFormat.format(date)
     }
 
     fun convertUnixToHour(dt: Long): String? {
         val date = Date(dt * 1000L)
-        val simpleDateFormat = SimpleDateFormat("HH:mm")
+        val simpleDateFormat = SimpleDateFormat("h:mm a")
         return simpleDateFormat.format(date)
+    }
+
+    fun changeBackgroundImage(condition: String): Int {
+        return if(condition.contains("rain")){
+            R.drawable.landscape_day_rain_mobile
+        }else{
+            R.drawable.landscape_day_mobile
+        }
+    }
+
+    fun getCitiesList(): List<String>{
+        return listOf("Berlin", "Calcutta", "Seoul", "Sao Paulo", "Sydney")
     }
 }

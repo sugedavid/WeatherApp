@@ -38,6 +38,7 @@ class WeatherInfoFragment : Fragment() {
     companion object {
         const val long = "long"
         const val lat = "lat"
+        const val city = "city"
     }
 
     private val instance: WeatherInfoFragment? = null
@@ -60,8 +61,9 @@ class WeatherInfoFragment : Fragment() {
 
     private var recycler_forecast: RecyclerView? = null
 
-    private var dbLat = "0.0"
-    private var dbLng = "0.0"
+    private var dbLat = ""
+    private var dbLng = ""
+    private var mCity = ""
 
     private var _binding: FragmentWeatherInfoBinding? = null
     private val binding get() = _binding!!
@@ -73,6 +75,7 @@ class WeatherInfoFragment : Fragment() {
         arguments?.let {
             dbLat = it.getString(lat).toString()
             dbLng = it.getString(long).toString()
+            mCity = it.getString(city).toString()
         }
 
         compositeDisposable = CompositeDisposable()
@@ -163,104 +166,206 @@ class WeatherInfoFragment : Fragment() {
 
     private fun getWeatherInformation() {
 
-        compositeDisposable?.add(
-            mService!!.getWeatherByLatLng(
-                dbLat, dbLng,
-                Common().apiKey,
-                "metric"
+        if (dbLat.isNotEmpty() && dbLng.isNotEmpty()) {
+
+            compositeDisposable?.add(
+                mService!!.getWeatherByLatLng(
+                    dbLat, dbLng,
+                    Common().apiKey,
+                    "metric"
+                )
+                !!.subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ weatherResult -> //Load Image
+                        Picasso.get().load(
+                            StringBuilder(Common().imageUrl)
+                                .append(weatherResult?.weather?.get(0)?.icon)
+                                .append(".png").toString()
+                        ).into(img_weather)
+
+                        //city
+                        txt_city_name?.text = weatherResult?.name
+
+                        //temperature
+                        txt_temperature?.text = java.lang.StringBuilder(
+                            String.valueOf(weatherResult?.main?.temp?.toInt())
+                        )
+                            .append("°C").toString()
+
+                        //date
+                        txt_date_time!!.text =
+                             Common().convertUnixToDate(weatherResult?.dt!!.toLong()) + "\n\n" + Common().convertUnixToHour(weatherResult?.dt!!.toLong())
+
+                        //pressure
+                        txt_pressure?.text = java.lang.StringBuilder(
+                            String.valueOf(
+                                weatherResult.main?.pressure
+                            )
+                        )
+                            .append(" hPa").toString()
+
+                        //humidity
+                        txt_humidity?.text = java.lang.StringBuilder(
+                            String.valueOf(
+                                weatherResult.main?.humidity
+                            )
+                        ).append(" %").toString()
+
+                        //wind
+                        txt_wind?.text = java.lang.StringBuilder(
+                            String.valueOf(
+                                (weatherResult.wind?.speed?.times(3.6))?.toInt()
+                            )
+                        ).append(" km/h").toString()
+
+                        //visibility
+                        txt_visibility?.text = java.lang.StringBuilder(
+                            String.valueOf(
+                                weatherResult.visibility / 1000
+                            )
+                        ).append(" km/h").toString()
+
+                        txt_sunset?.text = Common().convertUnixToHour(
+                            weatherResult.sys?.sunset!!.toLong()
+                        )
+                        txt_geo_cord?.text = java.lang.StringBuilder("[")
+                            .append(weatherResult.coord.toString())
+                            .append("]").toString()
+                        weather_panel!!.visibility = View.VISIBLE
+                        loading!!.visibility = View.GONE
+                    }, { throwable ->
+                        loading?.visibility = View.GONE
+                        Snackbar.make(
+                            requireActivity().findViewById(android.R.id.content),
+                            throwable.message!!, Snackbar.LENGTH_LONG
+                        ).show()
+                    })
             )
-            !!.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ weatherResult -> //Load Image
-                    Picasso.get().load(
-                        StringBuilder(Common().imageUrl)
-                            .append(weatherResult?.weather?.get(0)?.icon)
-                            .append(".png").toString()
-                    ).into(img_weather)
+        }
+        else if (mCity.isNotEmpty()){
+            compositeDisposable?.add(
+                mService?.getWeatherByCity(
+                    mCity,
+                    Common().apiKey,
+                    "metric"
+                )
+                !!.subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ weatherResult -> //Load Image
+                        Picasso.get().load(
+                            StringBuilder(Common().imageUrl)
+                                .append(weatherResult?.weather?.get(0)?.icon)
+                                .append(".png").toString()
+                        ).into(img_weather)
 
-                    //city
-                    txt_city_name?.text = weatherResult?.name
+                        //city
+                        txt_city_name?.text = weatherResult?.name
 
-                    //temperature
-                    txt_temperature?.text = java.lang.StringBuilder(
-                        String.valueOf(weatherResult?.main?.temp?.toInt())
-                    )
-                        .append("°C").toString()
-
-                    //date
-                    txt_date_time!!.text =
-                        "Updated " + Common().convertUnixToDate(weatherResult?.dt!!.toLong())
-
-                    //pressure
-                    txt_pressure?.text = java.lang.StringBuilder(
-                        String.valueOf(
-                            weatherResult.main?.pressure
+                        //temperature
+                        txt_temperature?.text = java.lang.StringBuilder(
+                            String.valueOf(weatherResult?.main?.temp?.toInt())
                         )
-                    )
-                        .append(" hPa").toString()
+                            .append("°C").toString()
 
-                    //humidity
-                    txt_humidity?.text = java.lang.StringBuilder(
-                        String.valueOf(
-                            weatherResult.main?.humidity
+                        //date
+                        txt_date_time!!.text =
+                            Common().convertUnixToDate(weatherResult?.dt!!.toLong()) + "\n\n" + Common().convertUnixToHour(weatherResult?.dt!!.toLong())
+
+                        //pressure
+                        txt_pressure?.text = java.lang.StringBuilder(
+                            String.valueOf(
+                                weatherResult.main?.pressure
+                            )
                         )
-                    ).append(" %").toString()
+                            .append(" hPa").toString()
 
-                    //wind
-                    txt_wind?.text = java.lang.StringBuilder(
-                        String.valueOf(
-                            (weatherResult.wind?.speed?.times(3.6))?.toInt()
+                        //humidity
+                        txt_humidity?.text = java.lang.StringBuilder(
+                            String.valueOf(
+                                weatherResult.main?.humidity
+                            )
+                        ).append(" %").toString()
+
+                        //wind
+                        txt_wind?.text = java.lang.StringBuilder(
+                            String.valueOf(
+                                (weatherResult.wind?.speed?.times(3.6))?.toInt()
+                            )
+                        ).append(" km/h").toString()
+
+                        //visibility
+                        txt_visibility?.text = java.lang.StringBuilder(
+                            String.valueOf(
+                                weatherResult.visibility / 1000
+                            )
+                        ).append(" km/h").toString()
+
+                        txt_sunset?.text = Common().convertUnixToHour(
+                            weatherResult.sys?.sunset!!.toLong()
                         )
-                    ).append(" km/h").toString()
-
-                    //visibility
-                    txt_visibility?.text = java.lang.StringBuilder(
-                        String.valueOf(
-                            weatherResult.visibility / 1000
-                        )
-                    ).append(" km/h").toString()
-
-                    txt_sunset?.text = Common().convertUnixToHour(
-                        weatherResult.sys?.sunset!!.toLong()
-                    )
-                    txt_geo_cord?.text = java.lang.StringBuilder("[")
-                        .append(weatherResult.coord.toString())
-                        .append("]").toString()
-                    weather_panel!!.visibility = View.VISIBLE
-                    loading!!.visibility = View.GONE
-                }, { throwable ->
-                    loading?.visibility = View.GONE
-                    Snackbar.make(
-                        requireActivity().findViewById(android.R.id.content),
-                        throwable.message!!, Snackbar.LENGTH_LONG
-                    ).show()
-                })
-        )
+                        txt_geo_cord?.text = java.lang.StringBuilder("[")
+                            .append(weatherResult.coord.toString())
+                            .append("]").toString()
+                        weather_panel!!.visibility = View.VISIBLE
+                        loading!!.visibility = View.GONE
+                    }, { throwable ->
+                        loading?.visibility = View.GONE
+                        Snackbar.make(
+                            requireActivity().findViewById(android.R.id.content),
+                            throwable.message!!, Snackbar.LENGTH_LONG
+                        ).show()
+                    })
+            )
+        }
     }
 
     private fun getForecastWeatherInformation() {
 
+        if (dbLat.isNotEmpty() && dbLng.isNotEmpty()) {
 
-        compositeDisposable!!.add(
-            mService!!.getForecastWeatherByLatLng(
-                dbLat, dbLng,
-                Common().apiKey,
-                "metric"
+
+            compositeDisposable!!.add(
+                mService!!.getForecastWeatherByLatLng(
+                    dbLat, dbLng,
+                    Common().apiKey,
+                    "metric"
+                )
+                !!.subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ weatherForecastResult ->
+                        displayForecastWeather(
+                            weatherForecastResult!!,
+                        )
+                    }
+                    ) { throwable ->
+                        Snackbar.make(
+                            requireActivity().findViewById(android.R.id.content),
+                            throwable.message!!, Snackbar.LENGTH_LONG
+                        ).show()
+                    }
             )
-            !!.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ weatherForecastResult ->
-                    displayForecastWeather(
-                        weatherForecastResult!!,
-                    )
-                }
-                ) { throwable ->
-                    Snackbar.make(
-                        requireActivity().findViewById(android.R.id.content),
-                        throwable.message!!, Snackbar.LENGTH_LONG
-                    ).show()
-                }
-        )
+        } else if (mCity.isNotEmpty()){
+            compositeDisposable!!.add(
+                mService!!.getForecastWeatherCity(
+                    mCity,
+                    Common().apiKey,
+                    "metric"
+                )
+                !!.subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ weatherForecastResult ->
+                        displayForecastWeather(
+                            weatherForecastResult!!,
+                        )
+                    }
+                    ) { throwable ->
+                        Snackbar.make(
+                            requireActivity().findViewById(android.R.id.content),
+                            throwable.message!!, Snackbar.LENGTH_LONG
+                        ).show()
+                    }
+            )
+        }
 
     }
 
@@ -268,7 +373,6 @@ class WeatherInfoFragment : Fragment() {
         weatherForecastResult: WeatherForecastResult
 
     ) {
-//        Log.d("WeatherInfoFragment", weatherForecastResult.list?.get(0)?.weather?.get(0)?.description.toString())
         val adapter = WeatherForecastAdapter(requireContext(), weatherForecastResult)
         val recyclerView = binding.recyclerForecast
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)

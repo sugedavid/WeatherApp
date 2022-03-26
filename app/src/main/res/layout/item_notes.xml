@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:gravity="end"
         android:textColor="@color/yellow"
+        android:layout_marginBottom="5dp"
         tools:text="Jun 1, 2020"/>
 
     <TextView

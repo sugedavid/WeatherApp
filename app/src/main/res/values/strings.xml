@@ -8,6 +8,7 @@
     <string name="write_note">Write note</string>
     <string name="note_added">Successfully added</string>
     <string name="copyright">© 2021 \n\nTerms of service | Privacy policy</string>
+    <string name="current_weather">Current weather</string>
 
 
 </resources>

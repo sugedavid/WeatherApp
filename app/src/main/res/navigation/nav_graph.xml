@@ -24,11 +24,15 @@
         <argument
             android:name="long"
             app:argType="string"
-            android:defaultValue="0" />
+            android:defaultValue="" />
         <argument
             android:name="lat"
             app:argType="string"
-            android:defaultValue="0" />
+            android:defaultValue="" />
+        <argument
+            android:name="city"
+            app:argType="string"
+            android:defaultValue="" />
         <action
             android:id="@+id/action_weatherFragment_to_homeFragment"
             app:destination="@id/homeFragment" />

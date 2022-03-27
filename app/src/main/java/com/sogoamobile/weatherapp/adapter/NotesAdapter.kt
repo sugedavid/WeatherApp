@@ -4,14 +4,9 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.sogoamobile.weatherapp.R
-import com.sogoamobile.weatherapp.common.Common
-import com.sogoamobile.weatherapp.data.Notes
-import com.sogoamobile.weatherapp.model.WeatherForecastResult
-import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.dialog_notes.view.*
+import com.sogoamobile.weatherapp.data.notes.Notes
 import kotlinx.android.synthetic.main.item_notes.view.*
 
 

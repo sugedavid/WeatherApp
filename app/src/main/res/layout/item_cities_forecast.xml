@@ -49,13 +49,13 @@
             app:layout_constraintTop_toBottomOf="@+id/txtDateTime" />
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/imgFavourite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txtTemperature"
-            app:srcCompat="@drawable/ic_heart_white" />
+            app:srcCompat="@drawable/ic_heart_outline" />
 
         <ImageView
             android:id="@+id/imgWeatherIcon"

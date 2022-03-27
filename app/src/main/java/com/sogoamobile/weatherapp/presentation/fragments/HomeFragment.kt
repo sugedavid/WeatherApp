@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.location.Location
 import android.opengl.Visibility
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,6 +28,10 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.sogoamobile.weatherapp.adapter.CitiesForecastAdapter
 import com.sogoamobile.weatherapp.common.Common
+import com.sogoamobile.weatherapp.data.cities.CitiesTable
+import com.sogoamobile.weatherapp.data.cities.CitiesViewModel
+import com.sogoamobile.weatherapp.data.notes.Notes
+import com.sogoamobile.weatherapp.data.notes.NotesViewModel
 import com.sogoamobile.weatherapp.databinding.FragmentHomeBinding
 import com.sogoamobile.weatherapp.retrofit.IOpenWeatherMap
 import com.sogoamobile.weatherapp.retrofit.RetrofitClient
@@ -35,7 +41,9 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import retrofit2.Retrofit
 import java.lang.String
+import java.util.*
 import kotlin.Boolean
+import kotlin.Comparator
 import kotlin.TODO
 import kotlin.plus
 import kotlin.toString
@@ -51,7 +59,7 @@ class HomeFragment : Fragment() , SearchView.OnQueryTextListener{
     private var mTxtDateTime: TextView? = null
     private var loading: ProgressBar? = null
     private var cdvFav: CardView? = null
-    var searchView: SearchView? = null
+    private var searchView: SearchView? = null
     private lateinit var adapter: CitiesForecastAdapter
 
     private var dbLat = "0.0"
@@ -62,6 +70,8 @@ class HomeFragment : Fragment() , SearchView.OnQueryTextListener{
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var citiesViewModel: CitiesViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,9 +95,18 @@ class HomeFragment : Fragment() , SearchView.OnQueryTextListener{
         searchView = binding.layoutHomeAppbar.searchView
         searchView?.setOnQueryTextListener(this)
 
+        //CitiesViewModel
+        citiesViewModel = ViewModelProvider(this).get(CitiesViewModel::class.java)
+        val citiesList = citiesViewModel.readAllData.value ?: emptyList()
+
+        citiesViewModel.readAllData.observe(viewLifecycleOwner, androidx.lifecycle.Observer { cities ->
+            adapter.setData(cities)
+            Log.d("TAG_Test", "DB List Home  $cities")
+        })
+
         // recycler view
          adapter =
-            CitiesForecastAdapter(requireContext(), compositeDisposable!!, mService!!, Common().getCitiesList())
+            CitiesForecastAdapter(requireContext(), compositeDisposable!!, mService!!, Common().getCitiesList(), citiesViewModel)
         val recyclerView = binding.recyclerCitiesForecast
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
@@ -224,12 +243,12 @@ class HomeFragment : Fragment() , SearchView.OnQueryTextListener{
     }
 
     override fun onQueryTextSubmit(query: kotlin.String?): Boolean {
-        adapter?.filter?.filter(query)
+        adapter.filter.filter(query)
         return false
     }
 
     override fun onQueryTextChange(newText: kotlin.String?): Boolean {
-        adapter?.filter?.filter(newText)
+        adapter.filter.filter(newText)
         return false
     }
 

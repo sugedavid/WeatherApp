@@ -2,6 +2,7 @@ package com.sogoamobile.weatherapp.common
 
 import android.location.Location
 import com.sogoamobile.weatherapp.R
+import com.sogoamobile.weatherapp.data.cities.CitiesTable
 import com.sogoamobile.weatherapp.model.CityFavourite
 import java.text.SimpleDateFormat
 import java.util.*
@@ -31,13 +32,21 @@ class Common {
         }
     }
 
-    fun getCitiesList(): ArrayList<CityFavourite> {
+    fun changeFavouriteImage(isFavourite: Boolean): Int {
+        return if (isFavourite) {
+            R.drawable.ic_heart_white
+        } else {
+            R.drawable.ic_heart_outline
+        }
+    }
+
+    fun getCitiesList(): ArrayList<CitiesTable> {
         return arrayListOf(
-            CityFavourite("Berlin", false),
-            CityFavourite("Calcutta", false),
-            CityFavourite("Seoul", false),
-            CityFavourite("Sao Paulo", false),
-            CityFavourite("Sydney", false)
+            CitiesTable(0,"Berlin", false),
+            CitiesTable(1,"Calcutta", false),
+            CitiesTable(2,"Seoul", false),
+            CitiesTable(3,"Sao Paulo", false),
+            CitiesTable(4,"Sydney", false)
         )
     }
 }

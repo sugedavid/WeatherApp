@@ -2,9 +2,7 @@ package com.sogoamobile.weatherapp.presentation.fragments
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.location.Location
-import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,7 +15,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
@@ -28,10 +25,7 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.sogoamobile.weatherapp.adapter.CitiesForecastAdapter
 import com.sogoamobile.weatherapp.common.Common
-import com.sogoamobile.weatherapp.data.cities.CitiesTable
 import com.sogoamobile.weatherapp.data.cities.CitiesViewModel
-import com.sogoamobile.weatherapp.data.notes.Notes
-import com.sogoamobile.weatherapp.data.notes.NotesViewModel
 import com.sogoamobile.weatherapp.databinding.FragmentHomeBinding
 import com.sogoamobile.weatherapp.retrofit.IOpenWeatherMap
 import com.sogoamobile.weatherapp.retrofit.RetrofitClient
@@ -43,8 +37,6 @@ import retrofit2.Retrofit
 import java.lang.String
 import java.util.*
 import kotlin.Boolean
-import kotlin.Comparator
-import kotlin.TODO
 import kotlin.plus
 import kotlin.toString
 
@@ -227,7 +219,7 @@ class HomeFragment : Fragment() , SearchView.OnQueryTextListener{
                     // change background
                     binding.imgBg1.setBackgroundResource(
                         Common().changeBackgroundImage(
-                            weatherResult?.weather?.get(0)?.description!!
+                            weatherResult.weather?.get(0)?.description!!, Calendar.getInstance()
                         )
                     )
 

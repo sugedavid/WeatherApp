@@ -53,7 +53,7 @@
             android:id="@+id/img_weather"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@android:drawable/star_on"/>
+            android:src="@drawable/ic_baseline_cloud_off"/>
 
     </LinearLayout>
 

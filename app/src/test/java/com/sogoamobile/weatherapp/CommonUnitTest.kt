@@ -2,8 +2,11 @@ package com.sogoamobile.weatherapp
 
 import com.sogoamobile.weatherapp.common.Common
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.time.Clock
+import java.time.Instant
+import java.time.ZoneId
+import java.util.*
 
 class CommonUnitTest {
 
@@ -17,12 +20,6 @@ class CommonUnitTest {
     @Test
     fun convertUnixToHourIsCorrect() {
         assertEquals(Common().convertUnixToHour(longDate), "2:51 pm")
-    }
-
-    @Test
-    fun changeBackgroundImageIsCorrect() {
-        assertEquals(Common().changeBackgroundImage("rainy"), R.drawable.landscape_day_rain_mobile)
-        assertEquals(Common().changeBackgroundImage("clear"), R.drawable.landscape_day_mobile)
     }
 
     @Test

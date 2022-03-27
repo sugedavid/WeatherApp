@@ -80,7 +80,7 @@ class NotesFragment : Fragment() {
         // weather info tab
         val weatherInfoTab = binding.notesAppbar.cdvWeatherInfo
         weatherInfoTab.setOnClickListener {
-            val action = NotesFragmentDirections.actionNotesFragmentToWeatherFragment()
+            val action = NotesFragmentDirections.actionNotesFragmentToWeatherFragment(lat = dbLat, long = dbLng)
             findNavController().navigate(action)
         }
 

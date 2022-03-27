@@ -1,9 +1,7 @@
 package com.sogoamobile.weatherapp.common
 
-import android.location.Location
 import com.sogoamobile.weatherapp.R
 import com.sogoamobile.weatherapp.data.cities.CitiesTable
-import com.sogoamobile.weatherapp.model.CityFavourite
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -24,15 +22,26 @@ class Common {
         return simpleDateFormat.format(date)
     }
 
-    fun changeBackgroundImage(condition: String): Int {
-        return if (condition.contains("rain")) {
+    fun changeBackgroundImage(condition: String, c: Calendar): Int {
+        val am = c.get(Calendar.AM_PM) === Calendar.AM
+
+        return if (condition.contains("rain") && am) {
             R.drawable.landscape_day_rain_mobile
+        } else if (!condition.contains("rain") && am) {
+            R.drawable.landscape_day_mobile
+        } else if (condition.contains("rain") && !am) {
+            R.drawable.landscape_night_rain_mobile
+        } else if (!condition.contains("rain") && !am) {
+            R.drawable.landscape_night_mobile
         } else {
             R.drawable.landscape_day_mobile
         }
+
     }
 
     fun changeFavouriteImage(isFavourite: Boolean): Int {
+
+
         return if (isFavourite) {
             R.drawable.ic_heart_white
         } else {
@@ -42,11 +51,27 @@ class Common {
 
     fun getCitiesList(): ArrayList<CitiesTable> {
         return arrayListOf(
-            CitiesTable(0,"Berlin", false),
-            CitiesTable(1,"Calcutta", false),
-            CitiesTable(2,"Seoul", false),
-            CitiesTable(3,"Sao Paulo", false),
-            CitiesTable(4,"Sydney", false)
+            CitiesTable(0,"Beijing", false),
+            CitiesTable(1,"Delhi", false),
+            CitiesTable(2,"Dhaka", false),
+            CitiesTable(3,"Guangzhou", false),
+            CitiesTable(4,"Istanbul", false),
+            CitiesTable(5,"Berlin", false),
+            CitiesTable(6,"Calcutta", false),
+            CitiesTable(7,"Seoul", false),
+            CitiesTable(8,"Sao Paulo", false),
+            CitiesTable(9,"Singapore", false),
+            CitiesTable(10,"Copenhagen", false),
+            CitiesTable(11,"Seoul", false),
+            CitiesTable(12,"Chandigarh", false),
+            CitiesTable(13,"Amsterdam", false),
+            CitiesTable(14,"Washington DC", false),
+            CitiesTable(15,"Zurich", false),
+            CitiesTable(16,"Montreal", false),
+            CitiesTable(17,"Berlin", false),
+            CitiesTable(18,"New York", false),
+            CitiesTable(19,"Tokyo", false),
+
         )
     }
 }

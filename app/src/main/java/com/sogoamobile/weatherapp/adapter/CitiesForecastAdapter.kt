@@ -107,6 +107,8 @@ open class CitiesForecastAdapter(
                     for (mCityDB in citiesDB) {
                         if (mCityDB.cityName == city.cityName && mCityDB.isFavourite) {
                             isFavouriteDB = true
+                        }else if (mCityDB.cityName == city.cityName && !mCityDB.isFavourite) {
+                            isFavouriteDB = false
                         }
                     }
 
@@ -124,11 +126,6 @@ open class CitiesForecastAdapter(
                         val updatedCity = CitiesTable(city.id, city.cityName, !city.isFavourite)
                         // add to db
                         citiesViewModel.updateCities(updatedCity)
-                        Toast.makeText(
-                            holder.itemView.context,
-                            "${city.cityName} added to favourite",
-                            Toast.LENGTH_SHORT
-                        ).show()
 
                     }
 
@@ -172,7 +169,7 @@ open class CitiesForecastAdapter(
                 } else {
                     val resultList = ArrayList<CitiesTable>()
                     for (row in cities) {
-                        if (row.cityName?.lowercase(Locale.ROOT)!!
+                        if (row.cityName.lowercase(Locale.ROOT)
                                 .contains(charSearch.lowercase(Locale.ROOT))
                         ) {
                             resultList.add(row)

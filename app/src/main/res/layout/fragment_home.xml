@@ -111,7 +111,7 @@
                         android:id="@+id/imgWeatherIcon"
                         android:layout_width="84dp"
                         android:layout_height="84dp"
-                        android:src="@android:drawable/star_on" />
+                        android:src="@drawable/ic_baseline_cloud_off" />
 
                 </LinearLayout>
 

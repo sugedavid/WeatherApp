@@ -100,7 +100,7 @@
                     android:layout_width="84dp"
                     android:layout_height="84dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_night" />
+                    android:src="@drawable/ic_baseline_cloud_off" />
 
 
                 <TableLayout
@@ -246,15 +246,6 @@
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="25dp"
-            android:gravity="center_horizontal"
-            android:text="10 Day Forecast"
-            android:textColor="@color/white"
-            android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"

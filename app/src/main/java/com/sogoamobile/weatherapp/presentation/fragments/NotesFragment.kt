@@ -16,8 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.sogoamobile.weatherapp.R
 import com.sogoamobile.weatherapp.adapter.NotesAdapter
-import com.sogoamobile.weatherapp.data.Notes
-import com.sogoamobile.weatherapp.data.NotesViewModel
+import com.sogoamobile.weatherapp.data.notes.Notes
+import com.sogoamobile.weatherapp.data.notes.NotesViewModel
 import com.sogoamobile.weatherapp.databinding.FragmentNotesBinding
 import java.text.SimpleDateFormat
 import java.util.*

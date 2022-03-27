@@ -1,4 +1,4 @@
-package com.sogoamobile.weatherapp.data
+package com.sogoamobile.weatherapp.data.notes
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao

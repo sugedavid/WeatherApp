@@ -1,9 +1,10 @@
-package com.sogoamobile.weatherapp.data
+package com.sogoamobile.weatherapp.data.notes
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.sogoamobile.weatherapp.repository.NotesRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

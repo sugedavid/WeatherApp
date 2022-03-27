@@ -1,4 +1,4 @@
-package com.sogoamobile.weatherapp.data
+package com.sogoamobile.weatherapp.data.notes
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

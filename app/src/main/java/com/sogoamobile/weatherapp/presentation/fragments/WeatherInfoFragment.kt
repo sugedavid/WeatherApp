@@ -171,7 +171,7 @@ class WeatherInfoFragment : Fragment() {
             compositeDisposable?.add(
                 mService!!.getWeatherByLatLng(
                     dbLat, dbLng,
-                    Common().apiKey,
+                    getString(Common().apiKey),
                     "metric"
                 )
                 !!.subscribeOn(Schedulers.io())
@@ -246,7 +246,7 @@ class WeatherInfoFragment : Fragment() {
             compositeDisposable?.add(
                 mService?.getWeatherByCity(
                     mCity,
-                    Common().apiKey,
+                    getString(Common().apiKey),
                     "metric"
                 )
                 !!.subscribeOn(Schedulers.io())
@@ -327,7 +327,7 @@ class WeatherInfoFragment : Fragment() {
             compositeDisposable!!.add(
                 mService!!.getForecastWeatherByLatLng(
                     dbLat, dbLng,
-                    Common().apiKey,
+                    getString(Common().apiKey),
                     "metric"
                 )
                 !!.subscribeOn(Schedulers.io())
@@ -348,7 +348,7 @@ class WeatherInfoFragment : Fragment() {
             compositeDisposable!!.add(
                 mService!!.getForecastWeatherCity(
                     mCity,
-                    Common().apiKey,
+                    getString(Common().apiKey),
                     "metric"
                 )
                 !!.subscribeOn(Schedulers.io())

@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class Common {
-    val apiKey = "120ac724beb69c2bf18a9a3b4707aa19"
+    val apiKey = R.string.apiKey
     val baseUrl = "https://api.openweathermap.org/data/2.5/"
     val imageUrl = "https://openweathermap.org/img/w/"
 

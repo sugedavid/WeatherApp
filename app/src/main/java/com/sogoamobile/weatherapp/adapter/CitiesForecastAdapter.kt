@@ -61,7 +61,7 @@ open class CitiesForecastAdapter(
         compositeDisposable.add(
             mService.getForecastWeatherCity(
                 city.cityName,
-                Common().apiKey,
+                holder.itemView.context.getString(Common().apiKey),
                 "metric"
             )
             !!.subscribeOn(Schedulers.io())

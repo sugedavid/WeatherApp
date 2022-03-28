@@ -192,10 +192,11 @@ class HomeFragment : Fragment() , SearchView.OnQueryTextListener{
 
     private fun getCurrentWeatherInformation() {
 
+
         compositeDisposable?.add(
             mService!!.getWeatherByLatLng(
                 dbLat, dbLng,
-                Common().apiKey,
+                getString(Common().apiKey),
                 "metric"
             )
             !!.subscribeOn(Schedulers.io())
